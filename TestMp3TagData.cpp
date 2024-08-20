@@ -267,7 +267,12 @@ void ForEachSong::operator()( const fs::path& path ) const
 
   // Read the MPEG data
   Mp3AudioData audio;
-  test( audio.Load( fileCopy ) );
+  if( !audio.Load( fileCopy ) )
+  {
+    PKLOG_WARN( "\n%S doesn't have any MPEG frames\n", fileCopy.c_str() );
+    test( File( fileCopy ).Delete() );
+    return;
+  }
   test( audio.HasMpegAudio() );
   test( audio.GetVersion() != MpegVersion::None );
   test( audio.GetLayer() != MpegLayer::None );
