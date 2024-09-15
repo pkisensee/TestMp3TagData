@@ -18,6 +18,7 @@
 #include <filesystem>
 #include <iostream>
 
+#include "APEv2Frames.h"
 #include "File.h"
 #include "Log.h"
 #include "Mp3AudioData.h"
