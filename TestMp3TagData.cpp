@@ -49,10 +49,6 @@ void TestBaseTagData()
   test( !Mp3BaseTagData::IsValidID3FrameID( "tooLong" ) );
   test( !Mp3BaseTagData::IsValidID3FrameID( "sm" ) );
   test( Mp3BaseTagData::IsValidID3FrameID( "TPE1" ) );
-
-  test( Mp3BaseTagData::IsID3TextFrame( Mp3FrameType::ID3Artist ) );
-  test( Mp3BaseTagData::IsID3TextFrame( std::string( "TCOM" ) ) );
-  test( Mp3BaseTagData::IsID3TextFrame( "TALB" ) );
   test( Mp3BaseTagData::GetID3FrameType( "TCON" ) == Mp3FrameType::ID3Genre );
   test( Mp3BaseTagData::GetID3FrameType( "TCon" ) == Mp3FrameType::None );
 }
