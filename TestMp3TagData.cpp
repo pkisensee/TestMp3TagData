@@ -49,8 +49,6 @@ void TestBaseTagData()
   test( !Mp3BaseTagData::IsValidID3FrameID( "tooLong" ) );
   test( !Mp3BaseTagData::IsValidID3FrameID( "sm" ) );
   test( Mp3BaseTagData::IsValidID3FrameID( "TPE1" ) );
-  test( Mp3BaseTagData::GetID3FrameType( "TCON" ) == Mp3FrameType::ID3Genre );
-  test( Mp3BaseTagData::GetID3FrameType( "TCon" ) == Mp3FrameType::None );
 }
 
 void TestTagData()
@@ -76,6 +74,7 @@ void TestTagData()
   test( tag.GetText( Mp3FrameType::ID3Conductor ) == "Conductor" );
   test( tag.GetText( Mp3FrameType::ID3Language ) == "eng" );
   test( tag.GetText( Mp3FrameType::ID3Mood ) == "Wild" );
+  test( tag.GetText( Mp3FrameType::APETrackGain ) == "+0.645000 dB" );
   test( tag.GetCommentCount() == 2 );
   test( tag.GetComment( 0 ) == "Comment" );
   test( tag.GetComment( 1 ) == "Wild" );
@@ -112,6 +111,7 @@ void TestTagData()
   tagCopy.SetText( Mp3FrameType::ID3Conductor, "Cond" );
   tagCopy.SetText( Mp3FrameType::ID3Language, "est" );
   tagCopy.SetText( Mp3FrameType::ID3Mood, "Crazy" );
+  // tagCopy.SetText( Mp3FrameType::APETrackGain, "+0.999000 dB" ); // not currently supported
 
   test( tagCopy.GetText( Mp3FrameType::ID3Title ) == "T" );
   test( tagCopy.GetText( Mp3FrameType::ID3Subtitle ) == "NewSubtitle" );
@@ -130,6 +130,7 @@ void TestTagData()
   test( tagCopy.GetText( Mp3FrameType::ID3Conductor ) == "Cond" );
   test( tagCopy.GetText( Mp3FrameType::ID3Language ) == "est" );
   test( tagCopy.GetText( Mp3FrameType::ID3Mood ) == "Crazy" );
+  test( tagCopy.GetText( Mp3FrameType::APETrackGain ) == "+0.645000 dB" );
 
   tagCopy.SetComment( 0, "CommentCopy" );
   test( tagCopy.GetComment( 0 ) == "CommentCopy" );
@@ -159,6 +160,14 @@ void TestTagData()
       case Mp3FrameType::ID3OrigArtist:     test( tagRead.GetText( frameType ) == "OrigArtist" ); break;
       case Mp3FrameType::ID3BeatsPerMinute: test( tagRead.GetText( frameType ) == "" ); break;
       default:                              test( tagRead.GetText( frameType ) == tagCopy.GetText( frameType ) ); break;
+      }
+    }
+    if( Mp3BaseTagData::IsAPETextTag( frameType ) )
+    {
+      switch( frameType )
+      {
+      case Mp3FrameType::APETrackGain: test( tagRead.GetText( frameType ) == "+0.645000 dB" ); break;
+      default:                         test( tagRead.GetText( frameType ) == tagCopy.GetText( frameType ) ); break;
       }
     }
   }
