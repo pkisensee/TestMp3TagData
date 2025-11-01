@@ -22,6 +22,7 @@
 #include "File.h"
 #include "Log.h"
 #include "Mp3AudioData.h"
+#include "Mp3FieldIterator.h"
 #include "Mp3TagData.h"
 
 extern "C" { __declspec( dllimport ) void __stdcall DebugBreak(); }
@@ -328,6 +329,30 @@ void ForEachSong::operator()( const fs::path& path ) const
   }
 }
 
+void TestFieldIterator()
+{
+  std::string composer = "John Williams";
+  auto c = BeginMp3Field( composer );
+  test( *c == "John Williams" );
+  ++c;
+  test( c == EndMp3Field( composer ) );
+
+  std::string composers = "Daryl Hall; John Oates";
+  for ( auto i = BeginMp3Field(composers); i != EndMp3Field(composers); ++i )
+    std::cout << *i << '\n';
+  c = BeginMp3Field( composers );
+  test( *c == "Daryl Hall" );
+  c++;
+  test( *c == "John Oates" );
+
+  std::string strange = " ;  ab  c ;  xyz   ; e f g  ";
+  c = BeginMp3Field( strange );
+  test( *c++ == "" );
+  test( *c++ == "ab  c" );
+  test( *c++ == "xyz" );
+  test( *c++ == "e f g" );
+}
+
 void TestMultiFile()
 {
   ForEachSong forEachSong;
@@ -365,6 +390,7 @@ int __cdecl main( int, char** )
   TestBaseTagData();
   TestAudioData();
   TestTagData();
+  TestFieldIterator();
   TestMultiFile();
   TestAudioData();
   return 0;
